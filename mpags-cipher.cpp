@@ -1,6 +1,44 @@
 #include <iostream>
-int main()
+int main(int argc, char* argv[])
 {
+  float vNumber = 1.02;
+  bool wantHelp{false};
+  bool wantO{false};
+  bool wantI{false};
+  bool wantV{false};
+  std::string oValue;
+  std::string iValue;
+  for (int i=0; i<argc; i++){
+    std::string tempString = argv[i];
+    std::cout<<argv[i]<<"\n";
+    if ((tempString=="--help")||(tempString=="-h")){
+      wantHelp = true;
+    }
+    else if (tempString=="-o"){
+      oValue=argv[i+1];
+      wantO=true;
+    }
+    else if (tempString=="--version"){
+      wantV=true;
+    }
+    else if (tempString=="-i"){
+      iValue=argv[i+1];
+      wantI=true;
+    }
+  }
+  if (wantHelp){
+    std::cout<<"HAHAHA YOU NEED HELP"<<"\n";
+  }
+  if (wantO){
+    std::cout<<"Output file is: "<<oValue<<"\n";
+  }
+  if (wantI){
+    std::cout<<"Input file is: "<<iValue<<"\n";
+  }
+  if (wantV){
+    std::cout<<"Version number is: "<<vNumber<<"\n";
+  }
+  
   std::string bigString{""};
   char in_char ('x');
   while (std::cin>>in_char)
