@@ -4,7 +4,7 @@ bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wan
 
 
 int main(int argc, char* argv[]){
-  float vNumber = 0.1.0;
+  float vNumber = 0.10;
   bool wantHelp{false};
   bool wantO{false};
   bool wantI{false};
@@ -98,23 +98,27 @@ std::string transformChar(char inputChar){
 
 
 bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wantO, bool& wantI, bool& wantV, std::string& iValue, std::string& oValue){
-  for (int i=0; i<argc; i++){
+  for (int i=1; i<argc; i++){
     std::string tempString = argv[i];
-    std::cout<<argv[i]<<"\n";
+    //std::cout<<argv[i]<<"\n";
     if ((tempString=="--help")||(tempString=="-h")){
       wantHelp = true;
       }
-    else if (tempString=="-o"){
+    else if (tempString=="-o"&&(i<argc)){
       oValue=argv[i+1];
       wantO=true;
+      }
+    else if (tempString=="-i"&&(i<argc)){
+      iValue=argv[i+1];
+      wantI=true;
       }
     else if (tempString=="--version"){
       wantV=true;
       }
-    else if (tempString=="-i"){
-      iValue=argv[i+1];
-      wantI=true;
-      } 
+    else {
+      return false;
+      }
     }
+    
     return true;
   }
