@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 std::string transformChar(const char inputChar);
 bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wantO, bool& wantI, bool& wantV, std::string& iValue, std::string& oValue);
 
@@ -13,9 +14,11 @@ int main(int argc, char* argv[]){
   std::string iValue;
   if(processCommandLine(argc, argv, wantHelp, wantO, wantI, wantV, iValue, oValue)==false){
     std::cout<<"ERROR processing command line"<<"\n";
+    return 1;
     }
   if (wantHelp){
-    std::cout<<"HAHAHA YOU NEED HELP"<<"\n";
+    std::cout<<"HELP"<<"\n";
+    return 0;
     }
   if (wantO){
     std::cout<<"Output file is: "<<oValue<<"\n";
@@ -25,15 +28,47 @@ int main(int argc, char* argv[]){
     }
   if (wantV){
     std::cout<<"Version number is: "<<vNumber<<"\n";
+    return 0;
     }
+
+    
+
+
+  
   
   std::string bigString{""};
-  char in_char ('x');
-  while (std::cin>>in_char)  {
-    bigString = bigString + transformChar(in_char);
+  
+  if (wantI){
+    std::ifstream in_file {iValue};
+    bool ok_to_read = in_file.good();
+    if (ok_to_read==false){
+      std::cout<<"Input file not OK to read \n";
+      return 1;
     }
-  std::cout<<bigString<<"\n";
- 
+    char inputChar{};
+    while (in_file>>inputChar) {
+      bigString = bigString+transformChar(inputChar);   
+    }    
+  }
+  else {
+    char inputChar {};
+    while (std::cin>>inputChar)  {
+      bigString = bigString + transformChar(inputChar);
+    }
+  }
+  
+  if (wantO){
+    std::ofstream out_file {oValue};
+    bool ok_to_write = out_file.good();
+    if (ok_to_write==false){
+      std::cout<<"Output file not OK to write \n";
+      return 1;
+      }
+    out_file<<bigString<<"\n";    
+    }
+  else {
+    std::cout<<bigString<<"\n";
+  }
  //system("eject");
 }
 
@@ -103,17 +138,21 @@ bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wan
     //std::cout<<argv[i]<<"\n";
     if ((tempString=="--help")||(tempString=="-h")){
       wantHelp = true;
-      }
-    else if (tempString=="-o"&&(i<argc)){
-      oValue=argv[i+1];
-      wantO=true;
-      }
-    else if (tempString=="-i"&&(i<argc)){
-      iValue=argv[i+1];
-      wantI=true;
+      return true;
       }
     else if (tempString=="--version"){
       wantV=true;
+      return true;
+      }
+    else if (tempString=="-o"&&(i<argc-1)){
+      oValue=argv[i+1];
+      wantO=true;
+      i++;
+      }
+    else if (tempString=="-i"&&(i<argc-1)){
+      iValue=argv[i+1];
+      wantI=true;
+      i++;
       }
     else {
       return false;
