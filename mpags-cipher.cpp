@@ -1,31 +1,18 @@
 #include <iostream>
-std::string transLit(char inputChar);
+std::string transformChar(const char inputChar);
+bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wantO, bool& wantI, bool& wantV, std::string& iValue, std::string& oValue);
+
 
 int main(int argc, char* argv[]){
-  float vNumber = 1.02;
+  float vNumber = 0.1.0;
   bool wantHelp{false};
   bool wantO{false};
   bool wantI{false};
   bool wantV{false};
   std::string oValue;
   std::string iValue;
-  for (int i=0; i<argc; i++){
-    std::string tempString = argv[i];
-    std::cout<<argv[i]<<"\n";
-    if ((tempString=="--help")||(tempString=="-h")){
-      wantHelp = true;
-      }
-    else if (tempString=="-o"){
-      oValue=argv[i+1];
-      wantO=true;
-      }
-    else if (tempString=="--version"){
-      wantV=true;
-      }
-    else if (tempString=="-i"){
-      iValue=argv[i+1];
-      wantI=true;
-      }
+  if(processCommandLine(argc, argv, wantHelp, wantO, wantI, wantV, iValue, oValue)==false){
+    std::cout<<"ERROR processing command line"<<"\n";
     }
   if (wantHelp){
     std::cout<<"HAHAHA YOU NEED HELP"<<"\n";
@@ -43,7 +30,7 @@ int main(int argc, char* argv[]){
   std::string bigString{""};
   char in_char ('x');
   while (std::cin>>in_char)  {
-    bigString += transLit(in_char);
+    bigString = bigString + transformChar(in_char);
     }
   std::cout<<bigString<<"\n";
  
@@ -51,7 +38,7 @@ int main(int argc, char* argv[]){
 }
 
 
-std::string transLit(char inputChar){
+std::string transformChar(char inputChar){
   std::string answer{""};
   
   if (isdigit(inputChar)){
@@ -108,3 +95,26 @@ std::string transLit(char inputChar){
   return answer;
     // Other wise, do nothing
 }
+
+
+bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wantO, bool& wantI, bool& wantV, std::string& iValue, std::string& oValue){
+  for (int i=0; i<argc; i++){
+    std::string tempString = argv[i];
+    std::cout<<argv[i]<<"\n";
+    if ((tempString=="--help")||(tempString=="-h")){
+      wantHelp = true;
+      }
+    else if (tempString=="-o"){
+      oValue=argv[i+1];
+      wantO=true;
+      }
+    else if (tempString=="--version"){
+      wantV=true;
+      }
+    else if (tempString=="-i"){
+      iValue=argv[i+1];
+      wantI=true;
+      } 
+    }
+    return true;
+  }
