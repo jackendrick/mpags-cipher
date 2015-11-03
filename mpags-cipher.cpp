@@ -3,7 +3,7 @@
 #include "TransformChar.hpp"
 
 
-bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wantO, bool& wantI, bool& wantV, std::string& iValue, std::string& oValue);
+bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wantO, bool& wantI, bool& wantV, std::string& iValue, std::string& oValue, int& kValue);
 void printHelp();
 void printVersion(float vNumber);
 
@@ -13,7 +13,7 @@ bool readStream(std::string& savedString, std::string inPutFileName);
 bool outStream(std::string& savedString);
 bool outStream(std::string& savedString, std::string outPutFileName);
 
-void CaesarCipher(std::string& input, int k);
+std::string CaesarCipher(std::string& input, int k);
 
 int main(int argc, char* argv[]){
   float vNumber = 0.10;
@@ -21,9 +21,10 @@ int main(int argc, char* argv[]){
   bool wantO{false};
   bool wantI{false};
   bool wantV{false};
+  int kValue{0};
   std::string oValue;
   std::string iValue;
-  if(processCommandLine(argc, argv, wantHelp, wantO, wantI, wantV, iValue, oValue)==false){
+  if(processCommandLine(argc, argv, wantHelp, wantO, wantI, wantV, iValue, oValue, kValue)==false){
     std::cout<<"ERROR processing command line"<<"\n";
     return 1;
     }
@@ -64,17 +65,20 @@ int main(int argc, char* argv[]){
   else {
      std::cout<<"Input read OK \n";
      }
-
-CaesarCipher(bigString, 0);
-
-
+  std::string result{CaesarCipher(bigString, kValue)};
+  std::cout<<"String now equals: "<<result<<"\n";
+  std::cout<<"End of caesar \n";
   // And now to out put the results
   bool outputSuccess{false}; 
+  std::cout<<"Output success should be initialised to false: "<<outputSuccess<<"\n";
+  std::cout<<"Is file output required: "<<wantO<<"\n";
+
   if (wantO){
-    outputSuccess = outStream (bigString, oValue);
+    outputSuccess = outStream (result, oValue);
     }
   else {
-    outputSuccess = outStream (bigString);
+    std::cout<<"Ready to output success to CL \n";
+    outputSuccess = outStream (result);
     }
   
   if (outputSuccess == false)
@@ -90,40 +94,42 @@ CaesarCipher(bigString, 0);
 }
 
 
-void CaesarCipher(std::string& input, int k){
+std::string CaesarCipher(std::string& input, int k){
 
 // Planning for homework:
-// Edit the input so only characters are saved
+// Edit the input so only characters are saved - DONE
 // Have the input string saved as bigString - DONE
 // Convert character string to an temporary integer array - DONE
-// If option is do decrypt, k = -k
+// If option is do decrypt, k = -k - DONE
 // Loop across each array element [i] = [i] + k - DONE
-// Check wraparound using modulus sign (both above 25 & below 0)
-// Convert back to character string / array
-// Output the result
-// Edit CL arguements
+// Check wraparound using modulus sign (both above 25 & below 0) - DONE, NEEDS TESTING
+// Convert back to character string / array - DONE
+// Output the result - DONE
+// Edit CL arguements - DONE
 
 // Converting bigString to integer array.  
   const int stringLength{input.length()};
-  int intArray [stringLength];
-  
+  std::cout<<"String length = "<<stringLength<<"\n";
+  std::string answer{""};
   for (int i = 0; i<stringLength; i++){
     int temp{input[i] + k - (int)'A'};
-    intArray[i]=temp;
+    std::cout<<"Input char "<<input[i]<<" is stored as "<<temp;
+    if (temp<0){
+      temp = temp + 26;
+      }
+    temp = temp % 26;  
+    answer = answer + (char) temp; 
+    std::cout<<" and changed to "<<(char) temp<<"\n";
     }
 
-  for (int i = 0; i<stringLength; i++){
-    int temp{intArray[i]+(int)'A'};
-    input[i]= (char)temp;
-    }
-
-
+  std::cout<<"And now string length = "<<answer.length()<<"\n";
+  return answer;
 
 }
 
 
 
-bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wantO, bool& wantI, bool& wantV, std::string& iValue, std::string& oValue){
+bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wantO, bool& wantI, bool& wantV, std::string& iValue, std::string& oValue, int& kValue){
   for (int i=1; i<argc; i++){
     std::string tempString = argv[i];
     //std::cout<<argv[i]<<"\n";
@@ -145,6 +151,14 @@ bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wan
       wantI=true;
       i++;
       }
+    else if (tempString=="-E"&&(i<argc-1)){
+      kValue= atoi(argv[i+1]);
+      i++;
+      }
+    else if (tempString=="-D"&&(i<argc-1)){
+      kValue = atoi(argv[i+1]) * -1;
+      i++;
+      }
     else {
       return false;
       }
@@ -155,7 +169,8 @@ bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wan
 
 void printHelp(){  
     std::cout<<"HELP:"<<"\n";
-    std::cout<<"Please run mpags-cipher. Additional command line arguements include: \n";
+    std::cout<<"Please run mpags-cipher. Add -E <k> for encryption OR -D <k> for decryption. \n";
+    std::cout<<"Additional command line arguements include: \n";
     std::cout<<"--version for verion number \n";
     std::cout<<"-i for file input, followed by the input file name \n";
     std::cout<<"-o for file output, followed by the output file name \n";
