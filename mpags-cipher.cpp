@@ -13,6 +13,8 @@ bool readStream(std::string& savedString, std::string inPutFileName);
 bool outStream(std::string& savedString);
 bool outStream(std::string& savedString, std::string outPutFileName);
 
+void CaesarCipher(std::string& input, int k);
+
 int main(int argc, char* argv[]){
   float vNumber = 0.10;
   bool wantHelp{false};
@@ -45,7 +47,7 @@ int main(int argc, char* argv[]){
 
 
   
-  
+ // The readStream functions handle the input of strings. It calls the transformChar function to ensure that all alphabet characters are capitalised and any other characters are ignored. 
   std::string bigString{""};
   bool inputSuccess{false};
   if (wantI){
@@ -59,7 +61,14 @@ int main(int argc, char* argv[]){
     std::cout<<"Input failed \n";
     return 1;
     }
- 
+  else {
+     std::cout<<"Input read OK \n";
+     }
+
+CaesarCipher(bigString, 0);
+
+
+  // And now to out put the results
   bool outputSuccess{false}; 
   if (wantO){
     outputSuccess = outStream (bigString, oValue);
@@ -73,10 +82,44 @@ int main(int argc, char* argv[]){
     std::cout<<"Output failed \n";
     return 1;
     }
+  else {
+    std::cout<<"Output produced OK \n";
+    return 0;  
+    }
  //system("eject");
 }
 
 
+void CaesarCipher(std::string& input, int k){
+
+// Planning for homework:
+// Edit the input so only characters are saved
+// Have the input string saved as bigString - DONE
+// Convert character string to an temporary integer array - DONE
+// If option is do decrypt, k = -k
+// Loop across each array element [i] = [i] + k - DONE
+// Check wraparound using modulus sign (both above 25 & below 0)
+// Convert back to character string / array
+// Output the result
+// Edit CL arguements
+
+// Converting bigString to integer array.  
+  const int stringLength{input.length()};
+  int intArray [stringLength];
+  
+  for (int i = 0; i<stringLength; i++){
+    int temp{input[i] + k - (int)'A'};
+    intArray[i]=temp;
+    }
+
+  for (int i = 0; i<stringLength; i++){
+    int temp{intArray[i]+(int)'A'};
+    input[i]= (char)temp;
+    }
+
+
+
+}
 
 
 
@@ -148,6 +191,7 @@ bool readStream(std::string& savedString, std::string inPutFileName){
 
 bool outStream(std::string& savedString){
   std::cout<<savedString<<"\n";
+  return true;
   }
 
 bool outStream(std::string& savedString, std::string outPutFileName){
