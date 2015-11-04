@@ -1,3 +1,8 @@
+/*
+ *MPAGS C++ work by JAMES KENDRICK JAK@HEP.PH.BHAM.AC.UK
+ *Indentation may not be consistent due a variety of text editors being used
+ */
+
 #include <iostream>
 #include <fstream>
 #include "TransformChar.hpp"
@@ -37,20 +42,16 @@ int main(int argc, char* argv[]){
     return 0;
     }
 
-// Commented unneed cout sections
-/*   *  if (wantO){
-    std::cout<<"Output file is: "<<oValue<<"\n";
-    }
-  if (wantI){
-    std::cout<<"Input file is: "<<iValue<<"\n";
-    }
-*/    
-
 
   
  // The readStream functions handle the input of strings. It calls the transformChar function to ensure that all alphabet characters are capitalised and any other characters are ignored. 
   std::string bigString{""};
   bool inputSuccess{false};
+  if(kValue==NULL){
+    std::cout<<"A k has not been input. Please run the program again. \n";
+    printHelp();
+    return 1;
+    }
   if (wantI){
     inputSuccess=readStream (bigString, iValue);
     }
@@ -59,35 +60,26 @@ int main(int argc, char* argv[]){
     }
 
   if (inputSuccess == false){
-    std::cout<<"Input failed \n";
     return 1;
     }
   else {
-     std::cout<<"Input read OK \n";
      }
   std::string result{CaesarCipher(bigString, kValue)};
-  std::cout<<"String now equals: "<<result<<"\n";
-  std::cout<<"End of caesar \n";
   // And now to out put the results
   bool outputSuccess{false}; 
-  std::cout<<"Output success should be initialised to false: "<<outputSuccess<<"\n";
-  std::cout<<"Is file output required: "<<wantO<<"\n";
 
   if (wantO){
     outputSuccess = outStream (result, oValue);
     }
   else {
-    std::cout<<"Ready to output success to CL \n";
     outputSuccess = outStream (result);
     }
   
   if (outputSuccess == false)
     {
-    std::cout<<"Output failed \n";
     return 1;
     }
   else {
-    std::cout<<"Output produced OK \n";
     return 0;  
     }
  //system("eject");
@@ -95,7 +87,6 @@ int main(int argc, char* argv[]){
 
 
 std::string CaesarCipher(std::string& input, int k){
-
 // Planning for homework:
 // Edit the input so only characters are saved - DONE
 // Have the input string saved as bigString - DONE
@@ -109,20 +100,19 @@ std::string CaesarCipher(std::string& input, int k){
 
 // Converting bigString to integer array.  
   const int stringLength{input.length()};
-  std::cout<<"String length = "<<stringLength<<"\n";
   std::string answer{""};
   for (int i = 0; i<stringLength; i++){
     int temp{input[i] + k - (int)'A'};
-    std::cout<<"Input char "<<input[i]<<" is stored as "<<temp;
     if (temp<0){
       temp = temp + 26;
       }
-    temp = temp % 26;  
-    answer = answer + (char) temp; 
-    std::cout<<" and changed to "<<(char) temp<<"\n";
+    else if (temp>25){
+      temp=temp%26;
+      }
+    temp = temp + (int)'A';  
+    char tempC = temp;
+    answer = answer + tempC; 
     }
-
-  std::cout<<"And now string length = "<<answer.length()<<"\n";
   return answer;
 
 }
@@ -132,7 +122,6 @@ std::string CaesarCipher(std::string& input, int k){
 bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wantO, bool& wantI, bool& wantV, std::string& iValue, std::string& oValue, int& kValue){
   for (int i=1; i<argc; i++){
     std::string tempString = argv[i];
-    //std::cout<<argv[i]<<"\n";
     if ((tempString=="--help")||(tempString=="-h")){
       wantHelp = true;
       return true;
@@ -169,17 +158,17 @@ bool processCommandLine(const int& argc, char* argv[], bool& wantHelp, bool& wan
 
 void printHelp(){  
     std::cout<<"HELP:"<<"\n";
-    std::cout<<"Please run mpags-cipher. Add -E <k> for encryption OR -D <k> for decryption. \n";
+    std::cout<<"Please run mpags-cipher. Add -E <k> for encryption OR -D <k> for decryption. Default IO is through the command line. \n \n";
+    std::cout<<"For command line entry, input the string once the program is running. CTRL+D to end input. \n \n";
     std::cout<<"Additional command line arguements include: \n";
     std::cout<<"--version for verion number \n";
     std::cout<<"-i for file input, followed by the input file name \n";
     std::cout<<"-o for file output, followed by the output file name \n";
-    std::cout<<"Defaults allow for command line entry & return of results";
-   }
+    }
 
 void printVersion (float vNumber){
-    std::cout<<"Version number is: "<<vNumber<<"\n";
-  }
+   std::cout<<"Version number is: "<<vNumber<<"\n";
+   }
 
 bool readStream(std::string& savedString){
     char inputChar {};
