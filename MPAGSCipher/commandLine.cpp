@@ -1,4 +1,5 @@
 #include "commandLine.hpp"
+#include "CipherFactory.hpp"
 #include <iostream>
 
 bool processCommandLine(const int& argc, char* argv[], CommandLineArgs& arguements){
@@ -12,6 +13,21 @@ bool processCommandLine(const int& argc, char* argv[], CommandLineArgs& arguemen
       arguements.wantVers = true;
       return true;
       }
+    else if (tempString=="-cipher"&&(i<argc-1)){
+      std::string choice{argv[i+1]};
+      if (choice=="caesar") {
+	arguements.cipherChoice=CipherType::Caesar;
+	i++;
+	}
+      else if (choice=="playfair") {
+	arguements.cipherChoice=CipherType::Playfair;
+	i++;
+	}
+      else {
+	std::cout<<"False part \n";
+	return false;
+	}
+      }
     else if (tempString=="-o"&&(i<argc-1)){
       arguements.oValue=argv[i+1];
       i++;
@@ -21,13 +37,15 @@ bool processCommandLine(const int& argc, char* argv[], CommandLineArgs& arguemen
       i++;
       }
     else if (tempString=="-E"&&(i<argc-1)){
-      int temp = atoi(argv[i+1])%26;
-      arguements.kValue= temp;
+     //int temp = atoi(argv[i+1])%26;
+      arguements.kValue= argv[i+1];
+      arguements.encOrDec=true;
       i++;
       }
     else if (tempString=="-D"&&(i<argc-1)){
-      int temp = atoi(argv[i+1])%26;
-      arguements.kValue = temp * -1;
+      //int temp = atoi(argv[i+1])%26;
+      arguements.kValue = argv[i+1];
+      arguements.encOrDec=false;
       i++;
       }
     else {

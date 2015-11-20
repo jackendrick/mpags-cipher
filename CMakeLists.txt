@@ -16,17 +16,20 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNUClan|AppleClang")
   set (CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -Wfatal-errors -Wshadow -pedantic")
 endif()
 
+# Added subdirectory, as in unit testing slides
+
+add_subdirectory(MPAGSCipher)
+
+enable_testing()
+add_subdirectory(Testing)
+
 # Declares the main build
 add_executable(
   mpags-cipher
   mpags-cipher.cpp
-  MPAGSCipher/IO.cpp
-  MPAGSCipher/IO.hpp
-  MPAGSCipher/commandLine.hpp
-  MPAGSCipher/commandLine.cpp
-  MPAGSCipher/CaesarCipher.hpp
-  MPAGSCipher/CaesarCipher.cpp
   )
+  
+target_link_libraries(mpags-cipher PRIVATE MPAGSCipher)
   
 target_include_directories(
   mpags-cipher
@@ -34,12 +37,7 @@ target_include_directories(
   )
 
 # Defines what compiler features are needed
-target_compile_features(
-  mpags-cipher
-  PRIVATE cxx_auto_type
-  cxx_range_for
-  cxx_uniform_initialization
-  )
+
   
 #Install for UNIX/GNU directoy structure
 include(GNUInstallDirs)

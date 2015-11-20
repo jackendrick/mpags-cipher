@@ -2,7 +2,7 @@
 #include <string>
 
 CaesarCipherClass::CaesarCipherClass(const int inputk)
-  : k{inputk}
+  : k{inputk} 
 {  
 }
 
@@ -10,7 +10,22 @@ int CaesarCipherClass::getk() const {
   return k;
   }
 
-std::string CaesarCipher(std::string& input, int k){
+std::string CaesarCipherClass::encrypt(const std::string& input) const{
+  std::string copy{input};
+  int key = getk();
+  std::string result{CaesarCipher(copy, key, true)};
+  return result;
+}
+
+
+std::string CaesarCipherClass::decrypt(const std::string& input) const{
+  std::string copy{input};
+  int key = getk();
+  std::string result{CaesarCipher(copy, key, false)};
+  return result;
+}
+  
+std::string CaesarCipherClass::CaesarCipher(std::string& input, int key, bool encOrDec) const{
 // Planning for homework:
 // Edit the input so only characters are saved - DONE
 // Have the input string saved as bigString - DONE
@@ -22,7 +37,17 @@ std::string CaesarCipher(std::string& input, int k){
 // Output the result - DONE
 // Edit CL arguements - DONE
 
-// Converting bigString to integer array.  
+// Converting bigString to integer array.
+  int k;
+  if (encOrDec){
+    k = key%26;
+    }
+  else if (encOrDec==false){
+    k = -1*(key%26);
+    }
+  else {
+    return "Error";
+    }
   std::string answer{""};
   for (int i = 0; i<input.length(); i++){
     int temp{input[i] + k - (int)'A'};

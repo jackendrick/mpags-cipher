@@ -18,7 +18,7 @@ std::string read(T& inputStream){
 
 template<typename T>
 void outPut(T& outputStream, std::string& savedString){
-    outputStream<<savedString;
+    outputStream<<savedString<<"\n";
 }
 
 #endif
